@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聚合直播</title>
+</head>
+<body>
+{% for anchor in anchors %}
+<div style="float:left;margin-left:10px">
+    <a href="{{ anchor.url }}"><img src="{{ anchor.img }}"></a><br/>
+    <span>[{{ anchor.comefrom }}]|{{ anchor.owner }}</span>, 热度:<span>{{ anchor.hot }}</span><br/>
+    <span>{{ anchor.title }}</span><br/>
+</div>
+{% end %}
+</body>
+</html>
