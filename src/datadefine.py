@@ -1,8 +1,12 @@
 # coding: utf-8
 
 from __future__ import unicode_literals, absolute_import
+import urllib3
+urllib3.disable_warnings()
 import time
 import logging
+import requests
+from bs4 import BeautifulSoup
 from collections import namedtuple
 
 Anchor = namedtuple('Anchor', ['owner', 'title', 'url', 'img', 'hot', 'comefrom'])
@@ -16,8 +20,23 @@ class BaseParser(object):
         self.anchors = []
         self.last_active = 0
 
-    def _crawl(self, url):
-        raise NotImplementedError('.')
+    def _crawl(self, page):
+        r = requests.get(page, verify=False)
+        doc = BeautifulSoup(r.content, 'html5lib')
+        for anchor in self._extract_anchors(doc):
+            try:
+                ret = self._extract_anchor(anchor)
+            except:
+                logging.exception('get anchor from (%s) failed.', anchor)
+            else:
+                if ret:
+                    self.anchors.append(ret)
+
+    def _extract_anchors(self, doc):
+        raise NotImplementedError('_extract_anchors')
+
+    def _extract_anchor(self, anchor_doc):
+        raise NotImplementedError('extract anchor')
 
     def crawl(self):
         try:
@@ -25,7 +44,7 @@ class BaseParser(object):
             for page in self.web_pages:
                 self._crawl(self.domain + page)
         except:
-            logging.exception('crawl ')
+            logging.exception('crawl pages in (%s) failed.', self.web_pages)
         self.last_active = time.time()
 
     def out_of_date(self, effective_time=30):

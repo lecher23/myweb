@@ -6,8 +6,8 @@
 </head>
 <body>
 {% for anchor in anchors %}
-<div style="float:left;margin-left:10px">
-    <a href="{{ anchor.url }}"><img src="{{ anchor.img }}"></a><br/>
+<div style="float:left;margin-left:10px;">
+    <a href="{{ anchor.url }}"><img src="{{ anchor.img }}" width="320px" height="180px"></a><br/>
     <span>[{{ anchor.comefrom }}]|{{ anchor.owner }}</span>, 热度:<span>{{ anchor.hot }}</span><br/>
     <span>{{ anchor.title }}</span><br/>
 </div>

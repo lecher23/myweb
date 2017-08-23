@@ -19,6 +19,8 @@ def start_server():
         'debug': 'true',
         'template_path': os.path.join(CUR, 'views/dynamic')
     }
+    SimpleHandler._douyu_.crawl()
+    SimpleHandler._huya_.crawl()
 
     app = Application(
         handlers=[(r'/', SimpleHandler)],
@@ -30,5 +32,6 @@ def start_server():
 
 
 if __name__ == '__main__':
+    sys.argv.append('--log_to_stderr=true')
     options.parse_command_line()
     start_server()
