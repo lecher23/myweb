@@ -19,8 +19,6 @@ def start_server():
         'debug': 'true',
         'template_path': os.path.join(CUR, 'views/dynamic')
     }
-    SimpleHandler._douyu_.crawl()
-    SimpleHandler._huya_.crawl()
 
     app = Application(
         handlers=[(r'/', SimpleHandler)],
