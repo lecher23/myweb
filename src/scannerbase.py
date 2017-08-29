@@ -15,7 +15,7 @@ Anchor = namedtuple('Anchor', ['owner', 'title', 'url', 'img', 'hot', 'comefrom'
 _null = object()
 
 
-class BaseParser(object):
+class BaseScanner(object):
     def __init__(self, name, domain, web_pages):
         self.name = name
         self.domain = domain if domain.startswith('http') else ('http://' + domain)
@@ -30,7 +30,7 @@ class BaseParser(object):
             try:
                 ret = self._extract_anchor(anchor)
             except:
-                logging.exception('get anchor from (%s) failed.', anchor)
+                logging.exception('[%s]get anchor from (%s) failed.', self.name, anchor)
             else:
                 if ret:
                     self.anchors.append(ret)
@@ -54,7 +54,7 @@ class BaseParser(object):
                 ele = getattr(ele, node, None)
             if not ele:
                 if default == _null:
-                    raise ValueError('get ele with node path {} from {} failed.'.format(node, ele))
+                    raise ValueError('[{}]get ele with node path {} from {} failed.'.format(self.name, node, ele))
                 else:
                     return default
         if nodes[-1] == 'text':
@@ -62,8 +62,34 @@ class BaseParser(object):
         else:
             ret = ele.get(nodes[-1].strip('[]'), default)
         if ret == _null:
-            raise ValueError('get ele with {} from {} failed.'.format(path, ele))
+            raise ValueError('[{}]get ele with {} from {} failed.'.format(self.name, path, ele))
         return ret.strip()
+
+    def _extra_some(self, ele, path, default=_null):
+        '''get some element by path
+         @:param ele, BeatifulSoup object
+         @:param path, element path, ie: nodepath1.(tag, attribute value) or nodepath2.tag_name
+         @:return List or default
+        '''
+        nodes = path.split('.')
+        for node in nodes[:-1]:
+            if node.startswith('('):
+                k, v = node[1:-1].split(',')
+                ele = ele.find(k.strip(), v.strip())
+            else:
+                ele = getattr(ele, node, None)
+            if not ele:
+                if default == _null:
+                    raise ValueError('[{}]get ele with node path {} from {} failed.'.format(self.name, node, ele))
+                else:
+                    return default
+        if nodes[-1].startswith('('):
+            ret = ele.find_all(*[s.strip() for s in nodes[-1].strip('()').split(',')])
+        else:
+            ret = ele.find_all(nodes[-1])
+        if ret is None and default == _null:
+            raise ValueError('[{}]get ele with {} from {} failed.'.format(self.name, path, ele))
+        return ret or default
 
     def _extract_anchors(self, doc):
         raise NotImplementedError('_extract_anchors')
@@ -77,7 +103,7 @@ class BaseParser(object):
             for page in self.web_pages:
                 self._crawl(self.domain + page)
         except:
-            logging.exception('crawl pages in (%s) failed.', self.web_pages)
+            logging.exception('[%s]crawl pages in (%s) failed.', self.name, self.web_pages)
         self.last_active = time.time()
 
     def out_of_date(self, effective_time=30):

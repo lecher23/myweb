@@ -1,0 +1,48 @@
+{
+  "熊猫TV": {
+    "domain": "https://www.panda.tv",
+    "pages": [
+      "/cate/hearthstone"
+    ],
+    "items_path": "(a, video-list-item-wrap)",
+    "info_path": {
+      "title": "(div, video-info).(span, video-title).text",
+      "href": "[href]",
+      "img": "(div, video-cover).img.[data-original]",
+      "owner": "(div, video-info).(span, video-nickname).text",
+      "hot": "(div, video-info).(span, video-number).text"
+    },
+    "min_hot": 2000
+  },
+  "虎牙TV": {
+    "domain": "https://www.huya.com",
+    "pages": [
+      "/g/hearthstone"
+    ],
+    "items_path": "(li, game-live-item)",
+    "info_path": {
+      "title": "(a, title).text",
+      "href": "a.[href]",
+      "img": "(a, video-info).img.[data-original]",
+      "owner": "(i, nick).[title]",
+      "hot": "(i, js-num).text"
+    },
+    "min_hot": 2000
+  },
+  "斗鱼TV": {
+    "domain": "https://www.douyu.com",
+    "pages": [
+      "/directory/game/How",
+      "/directory/game/HOTS"
+    ],
+    "items_path": "(a, play-list-link)",
+    "info_path": {
+      "title": "[title]",
+      "href": "[href]",
+      "img": "img.[data-original]",
+      "owner": "div.p.(span, dy-name).text",
+      "hot": "div.p.(span, dy-num).text"
+    },
+    "min_hot": 2000
+  }
+}
