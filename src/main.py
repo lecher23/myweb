@@ -8,7 +8,7 @@ import json
 import time
 from .handler import SimpleHandler
 from tornado.web import Application
-from tornado.options import options
+from tornado.options import options, define
 from .targets.common import CommonScanner
 import tornado.ioloop
 
@@ -32,7 +32,7 @@ class ScannerFactory(object):
             self.last_update = time.time()
 
 
-def start_server():
+def start_server(port):
     settings = {
         'static_path': os.path.join(CUR, 'views/static'),
         'static_url_prefix': 's',
@@ -46,11 +46,12 @@ def start_server():
         **settings
     )
 
-    app.listen(9999)
+    app.listen(port)
     tornado.ioloop.IOLoop.current().start()
 
 
 if __name__ == '__main__':
+    define('port', default=9999, type=int, help='server port')
     sys.argv.append('--log_to_stderr=true')
     options.parse_command_line()
-    start_server()
+    start_server(options.port)
