@@ -6,11 +6,14 @@ import os
 import sys
 import json
 import time
-from .handler import SimpleHandler
+import signal
+import logging
+import tornado.gen
+import tornado.ioloop
 from tornado.web import Application
 from tornado.options import options, define
+from .handler import SimpleHandler
 from .targets.common import CommonScanner
-import tornado.ioloop
 
 CUR = os.getcwd()
 
@@ -22,23 +25,59 @@ class ScannerFactory(object):
         self.last_update = 0
         self.cache_time = 60
         self.anchors = []
+        self.wake_interval = 120 * 1000
+        self._timer = None
+
+    def _expired(self):
+        return time.time() - self.last_update > self.cache_time
+
+    def start_timer_task(self):
+        self._timer = tornado.ioloop.PeriodicCallback(self.update_async, self.wake_interval)
+        self._timer.start()
+
+    def stop_timer_task(self):
+        self._timer.stop()
 
     def update(self):
-        if time.time() - self.last_update > self.cache_time:
+        if self._expired():
             self.anchors = []
             for p in self.scanners:
                 p.crawl()
                 self.anchors += p.anchors
             self.last_update = time.time()
 
+    @tornado.gen.coroutine
+    def update_async(self):
+        if self._expired():
+            logging.info('begin async update')
+            self.anchors = []
+            for p in self.scanners:
+                yield p.crawl_async()
+                self.anchors += p.anchors
+            self.last_update = time.time()
+
+
+def register_signal(scanner_factory):
+    def stop_server(signum, frame):
+        logging.info('%s, %s', signum, frame)
+        scanner_factory.stop_timer_task()
+        tornado.ioloop.IOLoop.current().stop()
+
+    signal.signal(signal.SIGQUIT, stop_server)
+    signal.signal(signal.SIGINT, stop_server)
+    signal.signal(signal.SIGTERM, stop_server)
+
 
 def start_server(port):
+    port = int(port)
+    sf = ScannerFactory('conf/tv.json')
+    sf.update()
     settings = {
         'static_path': os.path.join(CUR, 'views/static'),
         'static_url_prefix': 's',
-        'debug': 'true',
+        'debug': 'false',
         'template_path': os.path.join(CUR, 'views/dynamic'),
-        'scanner': ScannerFactory('conf/tv.json')
+        'scanner': sf
     }
 
     app = Application(
@@ -47,7 +86,11 @@ def start_server(port):
     )
 
     app.listen(port)
-    tornado.ioloop.IOLoop.current().start()
+    sf.start_timer_task()
+    register_signal(sf)
+    ioloop = tornado.ioloop.IOLoop.current()
+    logging.info('server listen on port: %s', port)
+    ioloop.start()
 
 
 if __name__ == '__main__':

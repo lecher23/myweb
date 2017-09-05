@@ -7,6 +7,8 @@ urllib3.disable_warnings()
 import time
 import logging
 import requests
+import tornado.gen
+from tornado.httpclient import AsyncHTTPClient
 from bs4 import BeautifulSoup
 from collections import namedtuple
 
@@ -23,9 +25,17 @@ class BaseScanner(object):
         self.anchors = []
         self.last_active = 0
 
-    def _crawl(self, page):
-        r = requests.get(page, verify=False)
-        doc = BeautifulSoup(r.content, 'html5lib')
+    def _crawl(self, page_url):
+        r = requests.get(page_url, verify=False)
+        self._process_html(r.content)
+
+    @tornado.gen.coroutine
+    def _crawl_async(self, page):
+        r = yield AsyncHTTPClient().fetch(page)
+        self._process_html(r.body)
+
+    def _process_html(self, html):
+        doc = BeautifulSoup(html, 'html5lib')
         for anchor in self._extract_anchors(doc):
             try:
                 ret = self._extract_anchor(anchor)
@@ -96,6 +106,16 @@ class BaseScanner(object):
 
     def _extract_anchor(self, anchor_doc):
         raise NotImplementedError('extract anchor')
+
+    @tornado.gen.coroutine
+    def crawl_async(self):
+        try:
+            self.anchors = []
+            for page in self.web_pages:
+                yield self._crawl_async(self.domain + page)
+        except:
+            logging.exception('[%s]crawl pages in (%s) failed.', self.name, self.web_pages)
+        self.last_active = time.time()
 
     def crawl(self):
         try:
