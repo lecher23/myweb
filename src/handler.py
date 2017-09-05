@@ -7,5 +7,4 @@ import tornado.web
 class SimpleHandler(tornado.web.RequestHandler):
     def get(self):
         scanner = self.settings['scanner']
-        scanner.update()
         self.render('index.html', anchors=scanner.anchors)
