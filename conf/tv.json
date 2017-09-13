@@ -39,7 +39,7 @@
     "info_path": {
       "title": "[title]",
       "href": "[href]",
-      "img": "img.[data-original]",
+      "img": "span.img.[data-original]",
       "owner": "div.p.(span, dy-name).text",
       "hot": "div.p.(span, dy-num).text"
     },
