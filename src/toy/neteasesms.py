@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from __future__ import unicode_literals
 import time
 import random
 import hashlib
@@ -36,5 +37,5 @@ class NeteaseMessage(object):
                 raise ValueError('content too long:{}'.format(content))
         body = 'templateid={}&mobiles=["{}"]&params=[{}]'.format(
             self._template_id, mobile, ','.join(("\"{}\"".format(item) for item in contents)))
-        r = requests.post(self._host, headers=self.make_header(), data=body)
+        r = requests.post(self._host, headers=self.make_header(), data=body.encode('utf-8'))
         print r.content

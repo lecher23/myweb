@@ -65,6 +65,14 @@ class GoldCrawl(object):
             low=float(found['Low']), close=float(found['LastClose']), up_time=ts
         )
 
+    @property
+    def suggestion(self):
+        if self.price_info.now > self.sell_point:
+            return '卖出'
+        elif self.price_info.now < self.buy_point:
+            return "买入"
+        return '持有'
+
     def __repr__(self):
         strs = list()
         strs.append("高点: %.2f， 低点: %.2f" % (self.sell_point, self.buy_point))
@@ -86,14 +94,19 @@ def main():
     parser.add_argument('-p', type=int, dest='phone', help='phone number to sent')
     args = parser.parse_args()
 
-    nm = NeteaseMessage(args.key, args.secret, args.template_id)
-    # nm.send_msg(args.phone, [])
-
     gc = GoldCrawl()
     gc.analyze_history_price()
     gc.analyze_today_price()
     print(gc)
 
+    nm = NeteaseMessage(args.key, args.secret, args.template_id)
+    pc = gc.price_info
+    nm.send_msg(args.phone, [
+        '{:.2f},{:.2f},{:.2f}'.format(pc.now, pc.low, pc.high),
+        '{:.2f}'.format(gc.buy_point),
+        '{:.2f}'.format(gc.sell_point),
+        gc.suggestion
+    ])
 
 if __name__ == '__main__':
     main()
