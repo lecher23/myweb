@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人空间</title>
+</head>
+<body>
+{% for anchor in anchors %}
+<!--<div style="float:left;margin-left:10px;">
+    <a href="{{ anchor.url }}"><img src="{{ anchor.img }}" width="320px" height="180px"></a><br/>
+    <span>[{{ anchor.comefrom }}]|{{ anchor.owner }}</span>, 热度:<span>{{ anchor.hot }}</span><br/>
+    <span>{{ anchor.title }}</span><br/>
+</div>
+-->
+{% end %}
+<div style="display:none">
+    <script src="https://s13.cnzz.com/z_stat.php?id=1264332580&web_id=1264332580" language="JavaScript"></script>
+</div>
+<a href="http://beian.miit.gov.cn/" target="_blank">浙ICP备18004946号</a>
+</body>
+</html>

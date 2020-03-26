@@ -1,19 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <title>聚合直播</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>我的主页</title>
 </head>
 <body>
-{% for anchor in anchors %}
-<div style="float:left;margin-left:10px;">
-    <a href="{{ anchor.url }}"><img src="{{ anchor.img }}" width="320px" height="180px"></a><br/>
-    <span>[{{ anchor.comefrom }}]|{{ anchor.owner }}</span>, 热度:<span>{{ anchor.hot }}</span><br/>
-    <span>{{ anchor.title }}</span><br/>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+<div class="container">
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+  <h1 class="display-4">欢迎来到我的小站~^^</h1>
+  <p class="lead">中国加油！</p>
+  <!-- <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a> -->
+  </div>
 </div>
-{% end %}
+
+    <div class="row">
+        <div class="col-12"><a href="http://blog.lecher.tech">1. 我的博客</a></div>
+        <div class="col-12"><a href="/jj">2. 基金追踪</a></div>
+	<div class="col-12"><hr class="my-4"></div>
+    </div>
+    <div class="row">
+	<div class="col-12"><h2>读书计划</h2></div>
+	<div class="col-12">
+		<div class="progress">
+			<div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+		</div>
+	</div>
+	<div class="col-12">
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">后真相时代</li>
+		<li class="list-group-item">为什么：关于因果关系的新科学</li>
+		<li class="list-group-item">生命与新物理学</li>
+		<li class="list-group-item">PHI：从脑到灵魂的旅行</li>
+		<li class="list-group-item">债务危机</li>
+		<li class="list-group-item">思想本质</li>
+	</ul>
+	</div>
+	<div class="col-12"><hr class="my-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-12">常用网站</div>
+        <div class="col-6">
+            <a href="https://pdf2mobi.com/zh/">PDF转MOBI</a>
+        </div>
+        <div class="col-6"><a href="https://177mh.net">漫画站</a></div>
+        <div class="col-6"><a href="https://dos.zczc.cz">DOS在线游戏</a></div>
+        <div class="col-6"><a href="https://at4am.io">电台资源推荐</a></div>
+    </div>
+</div>
+<hr/>
 <div style="display:none">
     <script src="https://s13.cnzz.com/z_stat.php?id=1264332580&web_id=1264332580" language="JavaScript"></script>
+</div>
+<footer class="navbar-fixed-bottom">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4"><a href="http://beian.miit.gov.cn/" target="_blank">浙ICP备18004946号-1</a></div>
+    </div>
+</footer>
+<hr/>
 </div>
 </body>
 </html>

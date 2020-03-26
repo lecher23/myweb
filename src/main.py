@@ -11,7 +11,7 @@ import tornado.gen
 import tornado.ioloop
 from tornado.web import Application
 from tornado.options import options, define
-from .handler import SimpleHandler
+from .handler import SimpleHandler,JjHandler
 from .targets.common import CommonScanner
 
 CUR = os.getcwd()
@@ -58,11 +58,15 @@ def start_server(port):
         'static_path': os.path.join(CUR, 'views/static'),
         'static_url_prefix': 's',
         'template_path': os.path.join(CUR, 'views/dynamic'),
+        'xheaders':True,
         'scanner': sf
     }
 
     app = Application(
-        handlers=[(r'/', SimpleHandler)],
+        handlers=[
+            (r'/jj', JjHandler),
+            (r'/', SimpleHandler)
+        ],
         **settings
     )
 
